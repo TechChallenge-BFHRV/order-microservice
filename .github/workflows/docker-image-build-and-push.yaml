@@ -21,8 +21,8 @@ jobs:
           id: build-docker-image
           run: |
             ls -la 
-            docker build . -f Dockerfile -t viniciusdeliz/techchallenge-items-microservice:main
+            docker build . -f Dockerfile -t viniciusdeliz/techchallenge-orders-microservice:main
         - name: push the docker image
           id: push-docker-image
-          run: docker push ${{secrets.DOCKERHUB_USERNAME}}/techchallenge-items-microservice:main
+          run: docker push ${{secrets.DOCKERHUB_USERNAME}}/techchallenge-orders-microservice:main
           if: github.ref == 'refs/heads/main'
