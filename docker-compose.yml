@@ -1,0 +1,39 @@
+services:
+  api:
+    container_name: order-microservice
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /usr/src/techchallenge-app/order-microservice
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - /usr/src/techchallenge-app/order-microservice/node_modules
+    command: sh -c "yarn start:prod"
+    depends_on:
+      - order-database-db
+    networks:
+      - app-network
+
+  order-database-db:
+    image: 'bitnami/postgresql:15'
+    container_name: order-database-db
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=orderdb
+    ports:
+      - 5434:5432
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    networks:
+      - app-network
+
+volumes:
+  postgresql_data:
+    driver: local
+
+networks:
+  app-network:

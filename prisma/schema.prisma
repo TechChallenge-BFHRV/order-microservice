@@ -1,0 +1,52 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ORDER_DATABASE_URL")
+}
+
+model Order {
+  id                  Int          @id @default(autoincrement())
+  totalPrice          Int?
+  finalPrice          Int?
+  preparationTime     Int?
+  status              Status
+  step                Step
+  createdAt           DateTime?    @default(now())
+  updatedAt           DateTime?    @updatedAt
+  InProgressTimestamp DateTime?
+  customerId          Int          
+  orderItems          OrderItems[]
+}
+
+model OrderItems {
+  id       Int     @id @default(autoincrement())
+  orderId  Int
+  itemId   Int
+  isActive Boolean @default(true)
+  Order    Order   @relation(fields: [orderId], references: [id])
+}
+
+enum Status {
+  STARTED
+  PENDING
+  APPROVED
+  IN_PROGRESS
+  READY
+  FINISHED
+  CANCELLED
+}
+
+enum Step {
+  START
+  MEAL
+  DRINK
+  SIDE_DISH
+  DESERT
+  CHECKOUT
+  PAYMENT_REQUEST
+  COMPLETED
+}
