@@ -1,47 +1,34 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Param,
-  Put,
-  Delete,
-} from '@nestjs/common';
-import { OrderRepository } from './order.repository';
+import { Controller, Body } from '@nestjs/common';
 import { CreateOrderDto, UpdateOrderDto } from './order.dto';
-import { CreateOrderUseCase } from './usecases/create-order.usecase';
-import { UpdateOrderUseCase } from './usecases/update-order.usecase';
+import { MessagePattern } from '@nestjs/microservices';
+import { AppService } from './app.service';
 
-@Controller('orders')
+@Controller()
 export class AppController {
-  constructor(
-    private readonly createOrderUseCase: CreateOrderUseCase,
-    private readonly updateOrderUseCase: UpdateOrderUseCase,
-    private readonly orderRepository: OrderRepository,
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
-  @Post()
+  @MessagePattern('create_order')
   create(@Body() createOrderDto: CreateOrderDto) {
-    return this.createOrderUseCase.execute(createOrderDto);
+    return this.appService.create(createOrderDto);
   }
 
-  @Get()
+  @MessagePattern('get_all_orders')
   findAll() {
-    return this.orderRepository.getAll();
+    return this.appService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderRepository.getById(+id);
+  @MessagePattern('get_order_by_id')
+  findOne(id: string) {
+    return this.appService.findOne(+id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.updateOrderUseCase.execute(+id, updateOrderDto);
+  @MessagePattern('update_order')
+  update(id: string, @Body() updateOrderDto: UpdateOrderDto) {
+    return this.appService.update(+id, updateOrderDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.orderRepository.delete(+id);
+  @MessagePattern('delete_order')
+  remove(id: string) {
+    return this.appService.remove(+id);
   }
 }

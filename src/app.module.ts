@@ -6,11 +6,13 @@ import { UpdateOrderUseCase } from './usecases/update-order.usecase';
 import { AppController } from './app.controller';
 import { Module } from '@nestjs/common';
 import { OrderMapper } from './order.mapper';
+import { AppService } from './app.service';
 
 @Module({
   imports: [],
   controllers: [AppController],
   providers: [
+    AppService,
     PrismaService,
     {
       provide: OrderRepository,
