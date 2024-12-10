@@ -2,15 +2,17 @@ import { Order } from '@prisma/client';
 import { CreateOrderDto } from '../order.dto';
 import { OrderMapper } from '../order.mapper';
 import { OrderRepository } from '../order.repository';
+import { Injectable } from '@nestjs/common';
+import { IUseCase } from './usecase';
 
-export class CreateOrderUseCase {
+@Injectable()
+export class CreateOrderUseCase implements IUseCase<Order> {
   constructor(
     private readonly orderRepository: OrderRepository,
-    private readonly orderMapper: OrderMapper,
   ) {}
 
   async execute(createOrderDto: CreateOrderDto): Promise<Order> {
-    const orderData = this.orderMapper.toEntity(createOrderDto);
+    const orderData = OrderMapper.toEntity(createOrderDto);
     return this.orderRepository.create(orderData);
   }
 }
