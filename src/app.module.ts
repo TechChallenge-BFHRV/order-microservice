@@ -7,6 +7,9 @@ import { AppController } from './app.controller';
 import { Module } from '@nestjs/common';
 import { OrderMapper } from './order.mapper';
 import { AppService } from './app.service';
+import { AddItemToOrderUseCase } from './usecases/order-items/add-item-to-order.usecase';
+import { OrderItemRepository } from './order-item.repository';
+import { PrismaOrderItemRepository } from './order-item.prisma.repository';
 
 @Module({
   imports: [],
@@ -18,8 +21,13 @@ import { AppService } from './app.service';
       provide: OrderRepository,
       useClass: PrismaOrderRepository,
     },
+    {
+      provide: OrderItemRepository,
+      useClass: PrismaOrderItemRepository,
+    },
     CreateOrderUseCase,
     UpdateOrderUseCase,
+    AddItemToOrderUseCase,
     OrderMapper,
   ],
 })

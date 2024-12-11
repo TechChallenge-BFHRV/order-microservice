@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto, UpdateOrderDto } from './order.dto';
-import { Order } from '@prisma/client';
+import { Order, Status, Step } from '@prisma/client';
 
 @Injectable()
 export class OrderMapper {
-  toEntity(dto: CreateOrderDto | UpdateOrderDto, existingOrder?: Order): any {
+  public static toEntity(dto: CreateOrderDto | UpdateOrderDto, existingOrder?: Order): any {
     if (existingOrder) {
       return {
         totalPrice: dto.totalPrice,
@@ -26,8 +26,8 @@ export class OrderMapper {
       totalPrice: dto.totalPrice,
       finalPrice: dto.finalPrice,
       preparationTime: dto.preparationTime,
-      status: dto.status,
-      step: dto.step,
+      status: dto.status || Status.STARTED,
+      step: dto.step || Step.START,
       customerId: dto.customerId,
       orderItems: {
         create: dto.orderItems?.map((item) => ({
