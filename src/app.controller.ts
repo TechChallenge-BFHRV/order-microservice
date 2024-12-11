@@ -9,18 +9,54 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @MessagePattern('create_order')
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.appService.create(createOrderDto);
+  async create(@Body() createOrderDto: CreateOrderDto) {
+    const res = await this.appService.create(createOrderDto);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Order created successfully',
+      data: res,
+    };
   }
 
   @MessagePattern('get_all_orders')
-  findAll() {
-    return this.appService.findAll();
+  async findAll() {
+    const allOrders = await this.appService.findAll();
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'List of a!!!ll orders retrieved successfully',
+      data: allOrders,
+    };
   }
 
   @MessagePattern('get_order_by_id')
-  findOne(id: string) {
-    return this.appService.findOne(+id);
+  async findOne(id: string) {
+    const order = await this.appService.findOne(+id);
+    if (!order) {
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: `Order with ID #${id} not found!`,
+        data: order,
+      };
+    }
+    const estimatedTime = order
+      ? new Date(
+          order.InProgressTimestamp?.getTime() + order.preparationTime * 1000,
+        )
+      : null;
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: `Order with ID #${id} retrieved successfully`,
+      data: {
+        ...order,
+        estimatedTime: estimatedTime,
+        minutesRemaining: estimatedTime
+          ? Math.floor(
+              (estimatedTime?.getTime() - new Date()?.getTime()) / 60000,
+            )
+          : null,
+      },
+    };
   }
 
   @MessagePattern('update_order')

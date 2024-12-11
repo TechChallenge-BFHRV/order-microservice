@@ -19,75 +19,40 @@ export class AppService {
 
   async create(createOrderDto: CreateOrderDto) {
     const orderCreated = await this.createOrderUseCase.execute(createOrderDto);
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: 'Order created successfully',
-      data: orderCreated,
-    };
+    return orderCreated;
   }
 
   async findAll() {
     const allOrders = await this.orderRepository.getAll();
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'List of all orders retrieved successfully',
-      data: allOrders.map((el: Order) => {
-        const estimatedTime = el
-          ? new Date(
-              el.InProgressTimestamp?.getTime() + el.preparationTime * 1000,
-            )
-          : null;
+    const allOrdersData = allOrders.map((el: Order) => {
+      const estimatedTime = el
+        ? new Date(
+            el.InProgressTimestamp?.getTime() + el.preparationTime * 1000,
+          )
+        : null;
 
-        return {
-          id: el.id,
-          totalPrice: el.totalPrice,
-          status: el.status,
-          step: el.step,
-          createdAt: el.createdAt,
-          updatedAt: el.updatedAt,
-          customerId: el.customerId,
-          orderItems: el?.orderItems?.map((orderItem) => {
-            return { orderItemId: orderItem.id, ...orderItem };
-          }),
-          estimatedTime: estimatedTime,
-          minutesRemaining: estimatedTime
-            ? Math.floor(
-                (estimatedTime?.getTime() - new Date()?.getTime()) / 60000,
-              )
-            : null,
-        };
-      }),
-    };
+      return {
+        id: el.id,
+        totalPrice: el.totalPrice,
+        status: el.status,
+        step: el.step,
+        createdAt: el.createdAt,
+        updatedAt: el.updatedAt,
+        customerId: el.customerId,
+        InProgressTimestamp: el.InProgressTimestamp,
+        finalPrice: el.finalPrice,
+        preparationTime: el.preparationTime,
+        orderItems: el?.orderItems?.map((orderItem) => {
+          return { ...orderItem };
+        }),
+      };
+    });
+    return allOrdersData;
   }
 
   async findOne(id: number) {
     const order = await this.orderRepository.getById(id);
-    if (!order) {
-      return {
-        statusCode: HttpStatus.NOT_FOUND,
-        message: `Order with ID #${id} not found!`,
-        data: order,
-      };
-    }
-    const estimatedTime = order
-      ? new Date(
-          order.InProgressTimestamp?.getTime() + order.preparationTime * 1000,
-        )
-      : null;
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: `Order with ID #${id} retrieved successfully`,
-      data: {
-        ...order,
-        estimatedTime: estimatedTime,
-        minutesRemaining: estimatedTime
-          ? Math.floor(
-              (estimatedTime?.getTime() - new Date()?.getTime()) / 60000,
-            )
-          : null,
-      },
-    };
+    return order;
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
