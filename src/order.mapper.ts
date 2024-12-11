@@ -13,12 +13,7 @@ export class OrderMapper {
         status: dto.status,
         step: dto.step,
         customerId: dto.customerId,
-        orderItems: {
-          create: dto.orderItems?.map((item) => ({
-            itemId: item.itemId,
-            isActive: item.isActive,
-          })),
-        },
+        orderItems: dto.orderItems,
       };
     }
 

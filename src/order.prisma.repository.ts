@@ -19,10 +19,13 @@ export class PrismaOrderRepository implements OrderRepository {
   async update(id: number, data: Order): Promise<Order> {
     return this.prisma.order.update({
       where: { id },
-      data,
-      include: {
-        orderItems: true,
-      },
+      data: {
+        orderItems: {
+          update: [],
+          create: [],
+          delete: [],
+        }
+      }
     });
   }
 

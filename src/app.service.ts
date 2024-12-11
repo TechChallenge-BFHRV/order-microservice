@@ -57,11 +57,7 @@ export class AppService {
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
     const orderUpdated = await this.updateOrderUseCase.execute(id, updateOrderDto);
-    return {
-      statusCode: HttpStatus.ACCEPTED,
-      message: 'Order updated successfully',
-      data: orderUpdated,
-    };
+    return orderUpdated;
   }
 
   remove(id: number) {
