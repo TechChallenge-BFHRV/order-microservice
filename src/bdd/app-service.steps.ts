@@ -5,6 +5,7 @@ import { CreateOrderUseCase } from '../usecases/create-order.usecase';
 import { UpdateOrderUseCase } from '../usecases/update-order.usecase';
 import { mockCreateOrderDto, mockUpdateOrderDto } from './order.dto.mock';
 import { AddItemToOrderUseCase } from '../usecases/order-items/add-item-to-order.usecase';
+import { Order } from '../entities/order.entity';
 
 const feature = loadFeature('./src/bdd/features/app-service.feature');
 
@@ -125,22 +126,25 @@ defineFeature(feature, (test) => {
 
   test('Find all orders', ({ given, when, then }) => {
     let result: any;
+    const mockedOrder: Order = {
+      id: 1,
+      totalPrice: 0,
+      finalPrice: 0,
+      preparationTime: 0,
+      status: 'STARTED',
+      step: 'START',
+      createdAt: undefined,
+      updatedAt: undefined,
+      InProgressTimestamp: undefined,
+      customerId: 0,
+      orderItems: [{
+        id: 111,
+        isActive: true,
+      }],
+    };
 
     given('the database has orders', () => {
-      orderRepository.getAll.mockResolvedValue([
-        {
-          id: 1,
-          totalPrice: 0,
-          finalPrice: 0,
-          preparationTime: 0,
-          status: 'STARTED',
-          step: 'START',
-          createdAt: undefined,
-          updatedAt: undefined,
-          InProgressTimestamp: undefined,
-          customerId: 0,
-        },
-      ]);
+      orderRepository.getAll.mockResolvedValue([{...mockedOrder}]);
     });
 
     when('the findAll method is called', async () => {
@@ -149,20 +153,7 @@ defineFeature(feature, (test) => {
 
     then('all orders should be returned', () => {
       expect(orderRepository.getAll).toHaveBeenCalled();
-      expect(result).toEqual([
-        {
-          id: 1,
-          totalPrice: 0,
-          finalPrice: 0,
-          preparationTime: 0,
-          status: 'STARTED',
-          step: 'START',
-          createdAt: undefined,
-          updatedAt: undefined,
-          InProgressTimestamp: undefined,
-          customerId: 0,
-        },
-      ]);
+      expect(result).toEqual([{...mockedOrder}]);
     });
   });
 
