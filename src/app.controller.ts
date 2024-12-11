@@ -60,8 +60,13 @@ export class AppController {
   }
 
   @MessagePattern('update_order')
-  update(@Body() updateOrderDto: any) {
-    return this.appService.update(updateOrderDto.order.id, updateOrderDto.order);
+  async update(@Body() updateOrderDto: any) {
+    const orderUpdated = await this.appService.update(updateOrderDto.order.id, updateOrderDto.order);
+    return {
+      statusCode: HttpStatus.ACCEPTED,
+      message: 'Order updated successfully',
+      data: orderUpdated,
+    };
   }
 
   @MessagePattern('delete_order')
