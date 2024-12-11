@@ -61,9 +61,7 @@ export class AppController {
 
   @MessagePattern('update_order')
   async update(@Body() updateOrderDto: any) {
-    console.log('UDPATING ORDER MESSAGE RECEIVED...', updateOrderDto);
     const orderUpdated = await this.appService.update(updateOrderDto.order.id, updateOrderDto.order);
-    console.log('updated order in microservice...', orderUpdated);
     return {
       statusCode: HttpStatus.ACCEPTED,
       message: 'Order updated successfully',
