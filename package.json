@@ -81,6 +81,9 @@
       ".mapper.ts",
       ".module.ts",
       ".service.ts",
+      ".repository.ts",
+      ".controller.ts",
+      ".dto.ts",
       "main.ts"
     ],
     "testEnvironment": "node"
