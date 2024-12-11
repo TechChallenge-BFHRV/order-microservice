@@ -2,6 +2,7 @@ import { Controller, Body } from '@nestjs/common';
 import { CreateOrderDto, UpdateOrderDto } from './order.dto';
 import { MessagePattern } from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { AddItemToOrderDTO } from './add-item-to-order-dto';
 
 @Controller()
 export class AppController {
@@ -23,12 +24,17 @@ export class AppController {
   }
 
   @MessagePattern('update_order')
-  update(id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.appService.update(+id, updateOrderDto);
+  update(@Body() updateOrderDto: any) {
+    return this.appService.update(updateOrderDto.order.id, updateOrderDto.order);
   }
 
   @MessagePattern('delete_order')
   remove(id: string) {
     return this.appService.remove(+id);
+  }
+
+  @MessagePattern('add_to_cart')
+  addToCart(orderItem: AddItemToOrderDTO) {
+    return this.appService.addToCart(orderItem);
   }
 }

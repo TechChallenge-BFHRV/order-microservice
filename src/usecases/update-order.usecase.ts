@@ -3,12 +3,12 @@ import { Order } from '@prisma/client';
 import { UpdateOrderDto } from '../order.dto';
 import { OrderMapper } from '../order.mapper';
 import { OrderRepository } from '../order.repository';
+import { IUseCase } from './usecase';
 
 @Injectable()
-export class UpdateOrderUseCase {
+export class UpdateOrderUseCase implements IUseCase<Order> {
   constructor(
     private orderRepository: OrderRepository,
-    private orderMapper: OrderMapper,
   ) {}
 
   async execute(id: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
@@ -17,7 +17,7 @@ export class UpdateOrderUseCase {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
 
-    const order = this.orderMapper.toEntity(updateOrderDto, existingOrder);
+    const order = OrderMapper.toEntity(updateOrderDto, existingOrder);
     return this.orderRepository.update(id, order);
   }
 }

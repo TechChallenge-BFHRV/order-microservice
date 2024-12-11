@@ -4,6 +4,7 @@ import { OrderRepository } from '../order.repository';
 import { CreateOrderUseCase } from '../usecases/create-order.usecase';
 import { UpdateOrderUseCase } from '../usecases/update-order.usecase';
 import { mockCreateOrderDto, mockUpdateOrderDto } from './order.dto.mock';
+import { AddItemToOrderUseCase } from '../usecases/order-items/add-item-to-order.usecase';
 
 const feature = loadFeature('./src/bdd/features/app-service.feature');
 
@@ -12,6 +13,7 @@ defineFeature(feature, (test) => {
   let orderRepository: jest.Mocked<OrderRepository>;
   let createOrderUseCase: jest.Mocked<CreateOrderUseCase>;
   let updateOrderUseCase: jest.Mocked<UpdateOrderUseCase>;
+  let addItemToOrderUseCase: jest.Mocked<AddItemToOrderUseCase>;
 
   beforeEach(() => {
     orderRepository = {
@@ -32,6 +34,7 @@ defineFeature(feature, (test) => {
       createOrderUseCase,
       updateOrderUseCase,
       orderRepository,
+      addItemToOrderUseCase,
     );
   });
 

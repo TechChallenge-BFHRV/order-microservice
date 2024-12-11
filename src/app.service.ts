@@ -5,6 +5,8 @@ import { CreateOrderUseCase } from './usecases/create-order.usecase';
 import { UpdateOrderUseCase } from './usecases/update-order.usecase';
 import { HttpStatus } from '@nestjs/common';
 import { Order } from './entities/order.entity';
+import { AddItemToOrderUseCase } from './usecases/order-items/add-item-to-order.usecase';
+import { AddItemToOrderDTO } from './add-item-to-order-dto';
 
 @Injectable()
 export class AppService {
@@ -12,6 +14,7 @@ export class AppService {
     private readonly createOrderUseCase: CreateOrderUseCase,
     private readonly updateOrderUseCase: UpdateOrderUseCase,
     private readonly orderRepository: OrderRepository,
+    private readonly addItemToOrderUseCase: AddItemToOrderUseCase,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -87,11 +90,25 @@ export class AppService {
     };
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return this.updateOrderUseCase.execute(id, updateOrderDto);
+  async update(id: number, updateOrderDto: UpdateOrderDto) {
+    const orderUpdated = await this.updateOrderUseCase.execute(id, updateOrderDto);
+    return {
+      statusCode: HttpStatus.ACCEPTED,
+      message: 'Order updated successfully',
+      data: orderUpdated,
+    };
   }
 
   remove(id: number) {
     return this.orderRepository.delete(id);
+  }
+
+  async addToCart(orderItem: AddItemToOrderDTO) {
+    const itemAdded = await this.addItemToOrderUseCase.execute(orderItem);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Item added to order successfully',
+      data: itemAdded,
+    };
   }
 }
