@@ -23,7 +23,7 @@ export class AppController {
     const allOrders = await this.appService.findAll();
     return {
       statusCode: HttpStatus.OK,
-      message: 'List of a!!!ll orders retrieved successfully',
+      message: 'List of all orders retrieved successfully',
       data: allOrders,
     };
   }
@@ -61,7 +61,9 @@ export class AppController {
 
   @MessagePattern('update_order')
   async update(@Body() updateOrderDto: any) {
+    console.log('UDPATING ORDER MESSAGE RECEIVED...', updateOrderDto);
     const orderUpdated = await this.appService.update(updateOrderDto.order.id, updateOrderDto.order);
+    console.log('updated order in microservice...', orderUpdated);
     return {
       statusCode: HttpStatus.ACCEPTED,
       message: 'Order updated successfully',
